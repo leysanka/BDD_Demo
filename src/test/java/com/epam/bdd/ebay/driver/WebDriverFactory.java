@@ -1,10 +1,9 @@
 package com.epam.bdd.ebay.driver;
 
+import com.epam.bdd.ebay.exceptions.UnknownDriverTypeException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 import static java.lang.String.*;
 

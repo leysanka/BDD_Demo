@@ -1,8 +1,7 @@
 package com.epam.bdd.ebay.steps;
 
 import com.epam.bdd.ebay.driver.SingleDriver;
-import com.epam.bdd.ebay.pages.HomePage;
-import com.epam.bdd.ebay.pages.SearchResultsPage;
+import com.epam.bdd.ebay.pages.*;
 import cucumber.api.PendingException;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
@@ -14,14 +13,13 @@ public class AddToCartSteps {
 
     private static SingleDriver driver = new SingleDriver();
 
-    private int foundResultsSize;
-
     @Given("^I stay in home page$")
-    public void navigateToHomePage() throws Throwable {
+    public HomePage navigateToHomePage() throws Throwable {
         HomePage homePage = new HomePage(driver);
         if (!driver.getCurrentUrl().equals(homePage.getHomePageUrl())) {
             driver.navigate().to(homePage.getHomePageUrl());
         }
+        return homePage;
     }
 
     @When("^I search for \"([^\"]*)\"$")
@@ -43,14 +41,49 @@ public class AddToCartSteps {
         performSearchInHomePage(searchValue);
         SearchResultsPage resultsPage = new SearchResultsPage(driver);
         resultsPage.showGoodsInBuyNow();
-        foundResultsSize = resultsPage.getSearchResultsCountShownInPage();
-        Assert.assertTrue(foundResultsSize > 0, "Not found " + searchValue);
+
+        Assert.assertTrue(resultsPage.getSearchResultsCountShownInPage() > 0, "Not found " + searchValue);
+    }
+
+    @Given("^The cart is empty$")
+    public boolean theCartIsEmpty() throws Throwable {
+        HomePage homePage = navigateToHomePage();
+        if (homePage.isPresentCartCountLabel()) {
+            CartViewPage cartPage =  homePage.goToCart();
+            cartPage.deleteAllGoodsFromCart();
+        }
+        Assert.assertFalse(new CommonPage(driver).isPresentCartCountLabel(), "The cart is not empty.");
+        return true;
+    }
+
+
+    @When("^I add to cart product number (\\d+) from the list of items shown in the Search Results$")
+    public void addToCartProductNumberFromTheListOfItemsShownInTheSearchResults(int number) throws Throwable {
+        (new SearchResultsPage(driver)).selectProductFromSearchList(number);
+        (new ProductViewPage(driver)).pressAddToCartButtonIfPresent();
 
     }
 
-    @And("^The cart is empty$")
-    public void theCartIsEmpty() throws Throwable {
-        // Write code here that turns the phrase above into concrete actions
-        throw new PendingException();
+    @Then("^I see the cart view page is opened$")
+    public void iSeeTheCartViewPageIsOpened() throws Throwable {
+       Assert.assertNotNull(new CartViewPage(driver), "The cart view is not opened.");
+    }
+
+    @And("^Selected product is shown there$")
+    public void selectedProductIsShownThere() throws Throwable {
+
+    }
+
+    @And("^The cart label shows (\\d+) count of products in it$")
+    public void theCartLabelShowsCountOfProductsInIt(int count) throws Throwable {
+       Assert.assertEquals(count, new CommonPage(driver).getCartCountValueIfPresent(), "Count of products added to cart does not meet to the ");
+    }
+
+    @Given ("^The \"([^\"]*)\" product has already been added to cart$")
+    public void theProductHasBeenAddedToCart(String product) throws Throwable {
+        if (theCartIsEmpty()) {
+            productsAreFoundInBuyNow(product);
+            addToCartProductNumberFromTheListOfItemsShownInTheSearchResults(1);
+        }
     }
 }

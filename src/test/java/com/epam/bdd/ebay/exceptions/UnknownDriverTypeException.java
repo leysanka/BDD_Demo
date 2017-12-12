@@ -1,4 +1,4 @@
-package com.epam.bdd.ebay.driver;
+package com.epam.bdd.ebay.exceptions;
 
 public class UnknownDriverTypeException extends RuntimeException {
 

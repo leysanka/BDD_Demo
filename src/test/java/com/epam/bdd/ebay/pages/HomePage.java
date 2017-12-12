@@ -5,7 +5,7 @@ import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
 import org.openqa.selenium.support.PageFactory;
 
-public class HomePage {
+public class HomePage extends CommonPage {
 
     private final String HOME_PAGE_URL = "https://www.ebay.com/";
 
@@ -18,8 +18,7 @@ public class HomePage {
     private WebDriver driver;
 
     public HomePage(WebDriver driver) {
-        this.driver = driver;
-        PageFactory.initElements(driver, this);
+        super(driver);
     }
 
     public void setSearchFieldValue(String value) {

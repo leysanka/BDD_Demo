@@ -1,10 +1,8 @@
 package com.epam.bdd.ebay.driver;
 
-import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
-
 import java.util.concurrent.TimeUnit;
 
 public class SingleDriver extends EventFiringWebDriver {
@@ -26,18 +24,17 @@ public class SingleDriver extends EventFiringWebDriver {
 
     public SingleDriver() {
         super(DRIVER);
+        manage().timeouts().implicitlyWait(IMPL_WAIT_TIMEOUT_SEC, TimeUnit.SECONDS);
+        manage().deleteAllCookies();
+        manage().window().maximize();
     }
 
+   /* Does not go there by some reason although written in cucumber sample as working approach, thus moved to constructor
     @Before
     public void setupDriver(){
         manage().timeouts().implicitlyWait(IMPL_WAIT_TIMEOUT_SEC, TimeUnit.SECONDS);
-        manage().window().maximize();
         manage().deleteAllCookies();
-    }
+        manage().window().maximize();
+    }*/
 
- /*   @After
-    public void closeDriver() {
-
-    }
-*/
 }
