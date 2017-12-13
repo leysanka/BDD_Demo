@@ -65,7 +65,7 @@ public class AddToCartSteps {
     }
 
     @Then("^I see the cart view page is opened$")
-    public void iSeeTheCartViewPageIsOpened() throws Throwable {
+    public void seeTheCartViewPageIsOpened() throws Throwable {
        Assert.assertNotNull(new CartViewPage(driver), "The cart view is not opened.");
     }
 

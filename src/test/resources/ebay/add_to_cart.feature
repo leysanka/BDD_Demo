@@ -4,9 +4,8 @@ Feature: add to cart products as a not logged in user
 #    Given I stay in home page
 #    When I search for "chinese green tee"
 #    Then Search results are found
-  Background:
-    Given The cart is empty
 
+@SeverityLevel.BLOCKER
   Scenario: Add two products to cart
     Given The "chinese green tee" product has already been added to cart
     And The cart label shows 1 count of products in it
@@ -15,9 +14,9 @@ Feature: add to cart products as a not logged in user
     Then I see the cart view page is opened
     And The cart label shows 2 count of products in it
 
-
+  @SeverityLevel.NORMAL
   Scenario Outline: Add one product to cart
-#    Given The cart is empty
+    Given The cart is empty
     And "<a>" products are found in BuyNow
     When I add to cart product number <b> from the list of items shown in the Search Results
     Then I see the cart view page is opened

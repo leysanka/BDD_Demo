@@ -7,7 +7,9 @@ import org.testng.annotations.BeforeClass;
 
 
 
-@CucumberOptions( plugin = "json:target/cucumber-report.json",
+@CucumberOptions( strict = true,
+        plugin = {/*"json:target/cucumber-report.json",*/
+        "com.github.kirlionik.cucumberallure.AllureReporter"},
                 features = "src/test/resources/ebay",
                 glue = "com.epam.bdd.ebay.steps" ,
                 format = {"pretty"} ,
