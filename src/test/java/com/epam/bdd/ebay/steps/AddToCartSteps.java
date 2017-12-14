@@ -2,7 +2,7 @@ package com.epam.bdd.ebay.steps;
 
 import com.epam.bdd.ebay.driver.SingleDriver;
 import com.epam.bdd.ebay.pages.*;
-import cucumber.api.PendingException;
+import cucumber.api.java.After;
 import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
@@ -13,13 +13,10 @@ public class AddToCartSteps {
 
     private static SingleDriver driver = new SingleDriver();
 
+
     @Given("^I stay in home page$")
-    public HomePage navigateToHomePage() throws Throwable {
-        HomePage homePage = new HomePage(driver);
-        if (!driver.getCurrentUrl().equals(homePage.getHomePageUrl())) {
-            driver.navigate().to(homePage.getHomePageUrl());
-        }
-        return homePage;
+    public void iStayInHomePage() throws Throwable {
+        navigateToHomePage();
     }
 
     @When("^I search for \"([^\"]*)\"$")
@@ -32,10 +29,10 @@ public class AddToCartSteps {
     @Then("^Search results are found$")
     public void searchResultsAreFound() throws Throwable {
         SearchResultsPage resultsPage = new SearchResultsPage(driver);
-        Assert.assertTrue(resultsPage.getSearchResultsCountShownInPage() > 0, "Not found." );
+        Assert.assertTrue(resultsPage.getSearchResultsCountShownInPage() > 0, "Nothing found.");
     }
 
-    @Given("^\"([^\"]*)\" products are found in BuyNow$")
+    @Given("^\"([^\"]*)\" products are present in 'Buy now' search results$")
     public void productsAreFoundInBuyNow(String searchValue) throws Throwable {
         navigateToHomePage();
         performSearchInHomePage(searchValue);
@@ -46,22 +43,23 @@ public class AddToCartSteps {
     }
 
     @Given("^The cart is empty$")
-    public boolean theCartIsEmpty() throws Throwable {
+    public void theCartIsEmpty() throws Throwable {
+        cleanCartIfNotEmpty();
+        Assert.assertFalse(new CommonPage(driver).isPresentCartCountLabel(), "The cart is not empty.");
+    }
+
+    private void cleanCartIfNotEmpty() {
         HomePage homePage = navigateToHomePage();
         if (homePage.isPresentCartCountLabel()) {
             CartViewPage cartPage =  homePage.goToCart();
             cartPage.deleteAllGoodsFromCart();
         }
-        Assert.assertFalse(new CommonPage(driver).isPresentCartCountLabel(), "The cart is not empty.");
-        return true;
     }
 
-
-    @When("^I add to cart product number (\\d+) from the list of items shown in the Search Results$")
-    public void addToCartProductNumberFromTheListOfItemsShownInTheSearchResults(int number) throws Throwable {
-        (new SearchResultsPage(driver)).selectProductFromSearchList(number);
+    @When("^I add to cart first found product from the search results list$")
+    public void addToCartFirtsProductFromTheTheSearchResultsList() throws Throwable {
+        (new SearchResultsPage(driver)).selectFirstItemFromSearchList();
         (new ProductViewPage(driver)).pressAddToCartButtonIfPresent();
-
     }
 
     @Then("^I see the cart view page is opened$")
@@ -81,9 +79,22 @@ public class AddToCartSteps {
 
     @Given ("^The \"([^\"]*)\" product has already been added to cart$")
     public void theProductHasBeenAddedToCart(String product) throws Throwable {
-        if (theCartIsEmpty()) {
+        cleanCartIfNotEmpty();
             productsAreFoundInBuyNow(product);
-            addToCartProductNumberFromTheListOfItemsShownInTheSearchResults(1);
+        addToCartFirtsProductFromTheTheSearchResultsList();
+    }
+
+    //@After("@base")
+    @After
+    public void cleanCartAfterMultipleFeatureRun() {
+        cleanCartIfNotEmpty();
+    }
+
+    private HomePage navigateToHomePage() {
+        HomePage homePage = new HomePage(driver);
+        if (!driver.getCurrentUrl().equals(homePage.getHomePageUrl())) {
+            driver.navigate().to(homePage.getHomePageUrl());
         }
+        return homePage;
     }
 }

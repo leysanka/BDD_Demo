@@ -32,6 +32,15 @@ public abstract class BasePage {
         return new Annotations(field).buildBy();
     }
 
+    public By getBy(String fieldName) {
+        try {
+            return new Annotations(this.getClass().getDeclaredField(fieldName)).buildBy();
+        } catch (NoSuchFieldException e) {
+            logger.error("Cannot get By locator for the specified element name.");
+            return null;
+        }
+    }
+
     public void waitForElementIsClickable(WebElement element) {
         logger.info("Waiting for element is clickable.");
         WebDriverWait wait = new WebDriverWait(driver, SECONDS_TO_WAIT);

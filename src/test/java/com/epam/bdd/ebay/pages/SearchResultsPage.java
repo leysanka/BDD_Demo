@@ -20,17 +20,12 @@ public class SearchResultsPage extends CommonPage {
         super(driver);
     }
 
-
-    public void selectProductFromSearchList(int i) {
-        if (i > 0) {
-            if (foundGoodsList.size() > 0 && foundGoodsList.size() >= i) {
-                foundGoodsList.get(i-1).click();
+    public void selectFirstItemFromSearchList() {
+        if (foundGoodsList.size() > 0) {
+            foundGoodsList.get(0).click();
                 waitForLoadingIsFinished();
             } else {
-                throw new InvalidTestDataException("Search results are empty or the specified index is greater than the list's size.");
-            }
-        } else {
-            throw new InvalidTestDataException("Negative index is specified.");
+            throw new InvalidTestDataException("Search results are empty.");
         }
     }
 

@@ -3,12 +3,14 @@ package com.epam.bdd.ebay.pages;
 import com.epam.bdd.ebay.exceptions.ElementNotPresentException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
-import org.openqa.selenium.support.PageFactory;
 
 public class CommonPage extends BasePage {
+
+    private static final By CART_COUNT_LABEL_XPATH = By.xpath("//i[@id='gh-cart-n']");
 
     @FindBy(xpath = "//i[@id='gh-cart-n']")
     private WebElement cartCountLabel;
@@ -22,13 +24,9 @@ public class CommonPage extends BasePage {
       super(driver);
     }
 
+
     public boolean isPresentCartCountLabel() {
-        try {
-            return isElementPresent(getBy(CommonPage.class.getDeclaredField("cartCountLabel")));
-        } catch (NoSuchFieldException e) {
-            logger.error("");
-            throw new ElementNotPresentException("");
-        }
+        return isElementPresent(CART_COUNT_LABEL_XPATH);
     }
 
     public int getCartCountValueIfPresent() {
